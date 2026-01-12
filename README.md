@@ -4,6 +4,7 @@ Acest proiect reprezintă o soluție completă de e-commerce pentru o florărie,
 **Structura Proiectului**
 Aplicația Flutter: Interfața utilizatorului, catalogul de produse și fluxul de checkout.
 Serverul Stripe (Node.js): Gestionează crearea PaymentIntent și securizarea tranzacțiilor.
+Codul pentru partea de Node.js se găsește aici: https://github.com/adinagilceava/bloom-studio-server.git
 
 **Instrucțiuni de Configurare**
 1. Configurarea Serverului (Backend)
