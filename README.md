@@ -28,12 +28,10 @@ Rulează flutter pub get pentru a descărca pachetele.
 -Dacă rulezi pe iOS Simulator sau Web, folosește: http://localhost:3000/create-payment-intent.
 
 Adaugă cheia publică Stripe în main.dart:
--
-Dart
--
-Stripe.publishableKey = "pk_test_... (cheia ta publica)";
+
+Dart: Stripe.publishableKey = "pk_test_... (cheia ta publica)";
 Pornește aplicația: flutter run.
--
+
 
 **Cerințe Tehnice**
 Node.js instalat pe sistem.
