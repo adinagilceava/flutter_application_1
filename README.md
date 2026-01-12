@@ -1,16 +1,45 @@
-# flutter_application_1
+🌸 **BloomStudio** - **Aplicație Mobilă cu Integrare Stripe**
+Acest proiect reprezintă o soluție completă de e-commerce pentru o florărie, formată dintr-o aplicație mobilă (Flutter) și un server de plăți (Node.js).
 
-A new Flutter project.
+**Structura Proiectului**
+Aplicația Flutter: Interfața utilizatorului, catalogul de produse și fluxul de checkout.
+Serverul Stripe (Node.js): Gestionează crearea PaymentIntent și securizarea tranzacțiilor.
 
-## Getting Started
+**Instrucțiuni de Configurare**
+1. Configurarea Serverului (Backend)
+-Serverul trebuie să ruleze pentru ca plățile să funcționeze.
+-Navighează în folderul serverului: cd stripe_server.
+-Instalează bibliotecile necesare: npm install.
+-Creează un fișier .env în acest folder și adaugă cheia ta secretă:
 
-This project is a starting point for a Flutter application.
+**Plaintext**
+STRIPE_SECRET_KEY=sk_test_... (cheia ta de aici)
 
-A few resources to get you started if this is your first Flutter project:
+Pornește serverul: node server.js (sau index.js).
+Notă: Serverul va rula la adresa http://localhost:3000.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+2. Configurarea Aplicației (Frontend)
+Deschide proiectul Flutter în VS Code.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Rulează flutter pub get pentru a descărca pachetele.
+**Important**: În codul Flutter, asigură-te că adresa IP a serverului este corectă.
+
+-Dacă rulezi pe Android Emulator, folosește: http://10.0.2.2:3000/create-payment-intent
+-Dacă rulezi pe iOS Simulator sau Web, folosește: http://localhost:3000/create-payment-intent.
+
+Adaugă cheia publică Stripe în main.dart:
+-
+Dart
+-
+Stripe.publishableKey = "pk_test_... (cheia ta publica)";
+Pornește aplicația: flutter run.
+-
+
+**Cerințe Tehnice**
+Node.js instalat pe sistem.
+Flutter SDK (versiunea stabilă).
+Un cont Stripe (pentru cheile de test).
+
+**Note Suplimentare**
+Fișierul .env și folderul node_modules sunt ignorate de Git pentru securitate și performanță.
+Pentru ca plățile să fie procesate, serverul trebuie să fie activ înainte de a apăsa butonul "Plătește" în aplicație.
