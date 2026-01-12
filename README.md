@@ -1,4 +1,5 @@
 🌸 **BloomStudio** - **Aplicație Mobilă cu Integrare Stripe**
+
 Acest proiect reprezintă o soluție completă de e-commerce pentru o florărie, formată dintr-o aplicație mobilă (Flutter) și un server de plăți (Node.js).
 
 **Structura Proiectului**
