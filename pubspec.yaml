@@ -72,6 +72,11 @@ flutter:
     - assets/images/image6.jpg
     - assets/images/image7.jpg
     - assets/images/image8.jpg
+    - assets/images/cactus.jpg
+    - assets/images/hortensie.jpeg
+    - assets/images/aechmea.jpg
+    - assets/images/bonsai.jpeg
+    - assets/images/yucca.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

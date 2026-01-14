@@ -1,51 +1,60 @@
 import 'package:flutter/material.dart';
+// aspect vizual, fara el aplicația nu ar ști ce este acela widget (oferă butoane, texte, imagini etc.)
 import 'package:flutter_stripe/flutter_stripe.dart'; // integrare serviciu de plată
 import 'dart:convert'; // pentru conversia datelor JSON, 
-import 'package:http/http.dart' as http; // aplicația flutter comunică mai întâi cu serverul node.js, nu poate comunica direct cu Stripe
+import 'package:http/http.dart' as http;
+// aplicația flutter comunică mai întâi cu serverul node.js, nu poate comunica direct cu Stripe
 
 
 /* 
   & APLICAȚIA BLOOMSTUDIO
   & Proiect Flutter - bloom Studio - Magazin de flori și plante
-  & Student: Adina Gilceava
+  & Student: Constantina-Adina Gîlceavă
   & Data: Ianuarie 2026
 */
 void main() async {
+  // async deoarece inițializarea Stripe poate dura ceva timp
   WidgetsFlutterBinding.ensureInitialized(); 
+  // se asigură că toate widget-urile sunt inițializate înainte de a continua
   
-  // CONFIGURARE STRIPE - Înlocuiește cu cheia ta publicabilă, aici se realizează legătura dintre aplicație și Stripe
+  // CONFIGURARE STRIPE - se înlocuiește cu cheia publicabilă, aici se realizează legătura dintre aplicație și Stripe
   Stripe.publishableKey = "pk_test_51SmtcWCwAWMlKmTqeYFzHW4hxBb2mg45xkar7tLrGP8CbKNjf3uz4kZx8asPgYvuPuIMYPzdwRfE3zRiI75O0mdi00UciAtZV8";
   
   runApp(const BloomStudioApp()); // se lansează interfața grafică a aplicației
 }
+
+// --- APLICAȚIA PRINCIPALĂ ---
 class BloomStudioApp extends StatelessWidget {
   const BloomStudioApp({super.key});
   @override // se ignoră setările implicite și se suprascrie
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner:false,
       title: 'BloomStudio',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 255, 240, 245), // Culoarea ta aleasă
+          seedColor: const Color.fromARGB(255, 255, 240, 245), // Culoarea aleasă principala
           primary: const Color.fromARGB(255, 246, 102, 150),
         ),
         useMaterial3: true,
+        //sistem de design modern
         fontFamily: 'Monserat', // Oferă un aspect mai elegant pentru un studio floral
       ),
       home: const OnboardingScreen(),
+      //prima pagina cand se deschide aplicatia
     );
   }
 }
 
 // --- MODELE DE DATE ---
+// se stochează informațiile, dar nu se desenează nimic deocamdată
 class OnboardingContent {
   String image, title, description;
   OnboardingContent({required this.image, required this.title, required this.description});
-}
+}// nu se poate crea pagina pana cand nu se dau toate aceste informatii (prin this facem asta)
 
 class Product {
-  final String id, name, image, description;
+  final String id, name, image, description,category;
   final double price;
   int quantity;
   bool isFavorite;
@@ -56,6 +65,7 @@ class Product {
     required this.image, 
     required this.price, 
     required this.description,
+    required this.category,
     this.quantity = 1, 
     this.isFavorite = false
   });
@@ -81,15 +91,22 @@ List<OnboardingContent> contents = [
 ];
 
 List<Product> allProducts = [
-  Product(id: "1", name: "Buchet lalele roșii", image: "assets/images/lalea.jpg", price: 25.0, description: "Un buchet vibrant de lalele proaspete, simbol al dragostei perfecte."),
-  Product(id: "2", name: "Buchet trandafiri", image: "assets/images/trandafir.jpg", price: 45.0, description: "Trandafiri premium selecționați manual pentru momente de neuitat."),
-  Product(id: "3", name: "Cactus Desert", image: "assets/images/roses.jpg", price: 30.0, description: "O plantă rezistentă și elegantă, ideală pentru decorul biroului tău."),
-  Product(id: "4", name: "Buchet lalele mix", image: "assets/images/image4.jpg", price: 85.0, description: "Un amestec vesel de culori primăvăratice într-un singur aranjament."),
-  Product(id: "5", name: "Buchete trandafiri", image: "assets/images/image5.jpg", price: 120.0, description: "Aranjament luxos de trandafiri în culori pastelate."),
-  Product(id: "6", name: "Buchet flori sălbatice", image: "assets/images/image6.jpg", price: 65.0, description: "Adu prospețimea naturii în casa ta cu acest buchet rustic."),
-  Product(id: "7", name: "Buchet mireasă", image: "assets/images/image7.jpg", price: 35.0, description: "Eleganță pură creată special pentru cea mai frumoasă zi din viața ta."),
-  Product(id: "8", name: "Buchet mix cu frunze", image: "assets/images/image8.jpg", price: 150.0, description: "Un design floral contemporan ce îmbină flori exotice cu texturi bogate."),
-];
+  Product(id: "1", name: "Buchet lalele roșii", category: "Buchete", image: "assets/images/lalea.jpg", price: 60.0, description: "Un buchet vibrant de lalele proaspete, simbol al dragostei perfecte."),
+  Product(id: "2", name: "Buchet trandafiri", category: "Buchete", image: "assets/images/trandafir.jpg", price: 65.0, description: "Trandafiri premium selecționați manual pentru momente de neuitat."),
+  Product(id: "3", name: "Cactus Desert", category: "De interior", image: "assets/images/roses.jpg", price: 50.0, description: "O plantă rezistentă și elegantă, ideală pentru decorul biroului tău."),
+  Product(id: "4", name: "Buchet lalele mix", category: "Buchete", image: "assets/images/image4.jpg", price: 85.0, description: "Un amestec vesel de culori primăvăratice într-un singur aranjament."),
+  Product(id: "5", name: "Buchete trandafiri", category: "Buchete", image: "assets/images/image5.jpg", price: 120.0, description: "Aranjament luxos de trandafiri în culori pastelate."),
+  Product(id: "6", name: "Buchet flori sălbatice", category:"Buchete" , image:"assets/images/image6.jpg" , price :65.0 , description:"Adu prospețimea naturii în casa ta cu acest buchet rustic."),
+  Product(id: "7", name: "Buchet mireasă", category: "Buchete", image: "assets/images/image7.jpg", price: 35.0, description: "Eleganță pură creată special pentru cea mai frumoasă zi din viața ta."),
+  Product(id: "8", name: "Buchet mix cu frunze", category: "Buchete", image: "assets/images/image8.jpg", price: 150.0, description: "Un design floral contemporan ce îmbină flori exotice cu texturi bogate."),
+  Product(id: "9", name: "Cactus Verde", category: "Suculente", image: "assets/images/cactus.jpg", price: 40.0, description: "Un cactus verde vibrant, perfect pentru a adăuga un strop de natură spațiului tău."),
+  Product(id: "10", name: "Hortensie Albastră", category: "Flori", image: "assets/images/hortensie.jpeg", price: 55.0, description: "O hortensie albastră delicată, ideală pentru a înfrumuseța orice încăpere."),
+  Product(id: "11", name: "Aechmea Fasciata", category: "De interior", image: "assets/images/aechmea.jpg", price: 70.0, description: "O plantă tropicală cu frunze spectaculoase și flori vibrante."),
+  Product(id: "12", name: "Bonsai Miniatural", category: "De interior", image: "assets/images/bonsai.jpeg", price: 90.0, description: "Un bonsai elegant, simbol al răbdării și al armoniei."),
+  Product(id: "13", name: "Yucca Elegans", category: "De interior", image: "assets/images/yucca.jpeg", price: 80.0, description: "O yucca impunătoare, perfectă pentru a adăuga un aer exotic casei tale."),
+  
+ ];
+ 
 
 List<Product> cartItems = [];
 
@@ -97,22 +114,22 @@ List<Product> cartItems = [];
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
   @override
-  _OnboardingScreenState createState() => _OnboardingScreenState();
+  OnboardingScreenState createState() => OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class OnboardingScreenState extends State<OnboardingScreen> {
   int currentIndex = 0;
-  late PageController _controller;
+  late PageController controller;
 
   @override
   void initState() {
-    _controller = PageController(initialPage: 0);
+    controller = PageController(initialPage: 0);
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    controller.dispose();
     super.dispose();
   }
 
@@ -124,7 +141,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         children: [
           Expanded(
             child: PageView.builder(
-              controller: _controller,
+              controller: controller,
               itemCount: contents.length,
               onPageChanged: (int index) => setState(() => currentIndex = index),
               itemBuilder: (_, i) => Column(
@@ -162,7 +179,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 if (currentIndex == contents.length - 1) {
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
                 } else {
-                  _controller.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                  controller.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -407,6 +424,14 @@ final List<Product> noutati = allProducts.sublist(3, 6);  // Următoarele 3
 final List<Product> speciale = allProducts.sublist(6, 8); // Ultimele 2 
   @override
   Widget build(BuildContext context) {
+    // 1. Calculăm lista filtrată DOAR dacă nu suntem pe "Toate"
+    List<Product> produseFiltrate = [];
+    if (selectedCategoryIndex != 0) {
+      produseFiltrate = allProducts
+          .where((p) => p.category == categorii[selectedCategoryIndex])
+          .toList();
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -414,21 +439,37 @@ final List<Product> speciale = allProducts.sublist(6, 8); // Ultimele 2
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. Header (Titlu)
-              const BloomStudioLogo(), // Apelează widget-ul creat mai sus
-
-              // 2. Bara de Căutare (Funcție separată)
+              const BloomStudioLogo(),
               _buildSearchBar(),
-
-              // 3. Meniul de Categorii (Funcție separată)
               _buildCategoryList(),
 
-              // 4. Secțiuni de Produse (Apelăm aceeași funcție cu titluri diferite)
-              _buildProductSection("Populare la BloomStudio", populare),
-              _buildProductSection("Cele mai vândute în Ianuarie", noutati),
-              _buildProductSection("Pentru Ziua Mamei", speciale),
+              // 2. LOGICĂ DE AFIȘARE:
+              if (selectedCategoryIndex == 0) ...[
+                // --- ACESTA ESTE ECRANUL DE "PRIMA DESCHIDERE" ---
+                _buildProductSection("Populare la BloomStudio", allProducts.sublist(0, 3)),
+                _buildProductSection("Cele mai vândute în Ianuarie", allProducts.sublist(3, 6)),
+                _buildProductSection("Pentru Ziua Mamei", allProducts.sublist(6, 8)),
+              ] else ...[
+                // --- ACESTA ESTE ECRANUL DUPĂ FILTRARE ---
+                _buildProductSection(
+                  "Rezultate pentru ${categorii[selectedCategoryIndex]}", 
+                  produseFiltrate
+                ),
+                
+                // Mesaj dacă categoria e goală
+                if (produseFiltrate.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 60),
+                    child: Center(
+                      child: Text(
+                        "Momentan nu avem produse în această categorie.",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+              ],
               
-              const SizedBox(height: 50), // Spațiu final la subsol
+              const SizedBox(height: 50),
             ],
           ),
         ),
@@ -470,17 +511,27 @@ final List<Product> speciale = allProducts.sublist(6, 8); // Ultimele 2
             itemCount: categorii.length,
             padding: const EdgeInsets.only(left: 20),
             itemBuilder: (context, index) => GestureDetector(
-              onTap: () => setState(() => selectedCategoryIndex = index),
+              onTap: () {
+                // Această linie permite schimbarea între "Toate" și categorii
+                setState(() => selectedCategoryIndex = index);
+              },
               child: Container(
                 margin: const EdgeInsets.only(right: 15),
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
-                  color: selectedCategoryIndex == index ? Theme.of(context).colorScheme.primary : Colors.grey[100],
+                  color: selectedCategoryIndex == index 
+                      ? Theme.of(context).colorScheme.primary 
+                      : Colors.grey[100],
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Center(
-                  child: Text(categorii[index], 
-                    style: TextStyle(color: selectedCategoryIndex == index ? Colors.white : Colors.black54)),
+                  child: Text(
+                    categorii[index], 
+                    style: TextStyle(
+                      color: selectedCategoryIndex == index ? Colors.white : Colors.black54,
+                      fontWeight: FontWeight.bold
+                    )
+                  ),
                 ),
               ),
             ),
@@ -526,7 +577,7 @@ final List<Product> speciale = allProducts.sublist(6, 8); // Ultimele 2
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 10, spreadRadius: 5)],
+          boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), blurRadius: 10, spreadRadius: 5)],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -566,8 +617,16 @@ class _CatalogScreenState extends State<CatalogScreen> {
   int selectedCategoryIndex = 0;
   final List<String> categorii = ["Toate", "De interior", "Buchete", "Suculente", "Flori"];
 
+//lista de filtrare produse
+ List<Product> getFilteredProducts() {
+    if (selectedCategoryIndex == 0) return allProducts;
+    return allProducts.where((p) => p.category == categorii[selectedCategoryIndex]).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // 2. Apelare filtrarea
+    final displayedProducts = getFilteredProducts();
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -590,11 +649,11 @@ class _CatalogScreenState extends State<CatalogScreen> {
             // Folosim Expanded pentru ca lista să ocupe tot spațiul rămas pe verticală
             Expanded(
               child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                itemCount: allProducts.length,
-                separatorBuilder: (context, index) => const Divider(height: 30),
+                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+
+                itemCount: displayedProducts.length, // Folosește lista filtrată
                 itemBuilder: (context, index) {
-                  final product = allProducts[index];
+                  final product = displayedProducts[index];
                   return InkWell(
                     onTap: () {
                       Navigator.push(
@@ -625,8 +684,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
                         IconButton(
                           onPressed: () {
                             setState(() {
-                              if (!cartItems.any((item) => item.id == product.id)) cartItems.add(product);
-                              else product.quantity++;
+                              if (!cartItems.any((item) => item.id == product.id)) {cartItems.add(product);}
+                              else {product.quantity++;}
                             });
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${product.name} adăugat!")));
                           },
@@ -636,6 +695,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                     ),
                   );
                 },
+                separatorBuilder: (context, index) => const Divider(),
               ),
             ),
           ],
@@ -819,7 +879,7 @@ class ProfileScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 55,
-              backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               child: const Icon(Icons.person, size: 60, color: Colors.grey),
             ),
             Container(
@@ -860,7 +920,7 @@ class ProfileScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)],
       ),
       child: Column(
         children: [
@@ -888,7 +948,7 @@ class ProfileScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.green.withOpacity(0.3)),
+              border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
             ),
             child: Row(
               children: [
@@ -920,7 +980,7 @@ class ProfileScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)],
       ),
       child: Column(
         children: [
@@ -992,8 +1052,8 @@ class _CartScreenState extends State<CartScreen> {
                               IconButton(
                                 icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
                                 onPressed: () => setState(() {
-                                  if (item.quantity > 1) item.quantity--;
-                                  else cartItems.removeAt(index);
+                                  if (item.quantity > 1) {item.quantity--;}
+                                  else {cartItems.removeAt(index);}
                                 }),
                               ),
                               Text("${item.quantity}", style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -1015,7 +1075,7 @@ class _CartScreenState extends State<CartScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
-                    BoxShadow(color: Colors.grey.withOpacity(0.2), spreadRadius: 1, blurRadius: 5)
+                    BoxShadow(color: Colors.grey.withValues(alpha: 0.2), spreadRadius: 1, blurRadius: 5)
                   ],
                 ),
                 child: Column(
@@ -1028,7 +1088,7 @@ class _CartScreenState extends State<CartScreen> {
                           "${total.toStringAsFixed(2)} RON",
                           style: TextStyle(
                             fontSize: 18,
-                            color: Theme.of(context).colorScheme.primary, // Folosim rozul tau
+                            color: Theme.of(context).colorScheme.primary, 
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -1181,7 +1241,7 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
       _showErrorDialog('Eroare: $e');
     }
   }
-
+// Afișează dialogul de succes
   void _showSuccessDialog() {
     showDialog(
       context: context,
@@ -1204,7 +1264,7 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
       ),
     );
   }
-
+// Afișează dialogul de eroare
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
@@ -1220,7 +1280,7 @@ class _PaymentSimulationScreenState extends State<PaymentSimulationScreen> {
       ),
     );
   }
-
+    // Construiește UI-ul ecranului de plată
   @override
   Widget build(BuildContext context) {
     double total = cartItems.fold(0, (sum, item) => sum + (item.price * item.quantity));
